@@ -10,10 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.samsaz.canvasmemories.R
-import com.samsaz.canvasmemories.model.Memory
-import com.samsaz.canvasmemories.model.MemoryEvent
-import com.samsaz.canvasmemories.model.MemoryType
-import com.samsaz.canvasmemories.model.Screen
+import com.samsaz.canvasmemories.model.*
 import com.samsaz.canvasmemories.ui.MemoryView
 import kotlinx.android.synthetic.main.fragment_mind_editor.*
 import kotlinx.android.synthetic.main.fragment_mind_editor.view.*
@@ -100,11 +97,32 @@ class MindEditorFragment : Fragment() {
     }
 
     private fun updateMemoryState(memory: Memory) {
+        if (memory.state == MemoryState.Erased) {
+            removeMemoryView(memory)
+            return
+        }
+
         val view = viewList[memory.id]
         if (view != null)
             view.update(memory)
         else
             addMemoryView(memory)
+    }
+
+    private fun removeMemoryView(memory: Memory) {
+        val index = viewList.indexOfKey(memory.id)
+        if (index < 0)
+            return
+
+        val view = viewList.valueAt(index)
+        viewList.removeAt(index)
+
+        val lastChildIndex = frame.childCount - 1
+        if (frame.getChildAt(lastChildIndex) == view) {
+            frame.removeViewAt(lastChildIndex)
+        } else {
+            frame.removeView(view)
+        }
     }
 
     override fun onDestroyView() {

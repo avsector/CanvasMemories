@@ -11,4 +11,5 @@ sealed class MemoryEvent {
     }
     data class Mutate(val memory: Memory, val reverse: Boolean): MemoryEvent()
     data class Remember(val memories: List<Memory>): MemoryEvent()
+    data class Erase(val memory: Memory): MemoryEvent()
 }

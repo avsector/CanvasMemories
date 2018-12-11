@@ -8,6 +8,7 @@ package com.samsaz.canvasmemories.model
 sealed class MemoryState {
     data class Bright(val type: MemoryType): MemoryState()
     object Faded: MemoryState()
+    object Erased: MemoryState()
 }
 
 sealed class MemoryType {

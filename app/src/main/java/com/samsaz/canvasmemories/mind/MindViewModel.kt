@@ -51,6 +51,9 @@ class MindViewModel : ViewModel() {
                 val newState = event.memories[0].state
                 updateMemoryState(event.memories, newState)
             }
+            is MemoryEvent.Erase -> {
+                updateMemoryState(event.memory, MemoryState.Erased)
+            }
         }
 
         if (!fromUndo)
@@ -63,7 +66,7 @@ class MindViewModel : ViewModel() {
 
         val event = eventStack.pop()
         val undoEvent = when (event) {
-            is MemoryEvent.Add -> MemoryEvent.Forget(event.memory)
+            is MemoryEvent.Add -> MemoryEvent.Erase(event.memory)
             is MemoryEvent.Forget -> MemoryEvent.Remember(event.memories)
             is MemoryEvent.Mutate -> MemoryEvent.Mutate(event.memory, true)
             else -> null
@@ -125,7 +128,11 @@ class MindViewModel : ViewModel() {
         val mem = memoryList[memory.id] ?: return
 
         val newMem = mem.copy(state = newState)
-        memoryList.put(newMem.id, newMem)
+        if (newMem.state == MemoryState.Erased) {
+            memoryList.remove(newMem.id)
+        } else {
+            memoryList.put(newMem.id, newMem)
+        }
         updateMemoriesLiveData(newMem)
     }
 
