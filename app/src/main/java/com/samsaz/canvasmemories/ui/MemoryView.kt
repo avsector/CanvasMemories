@@ -2,9 +2,6 @@ package com.samsaz.canvasmemories.ui
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import com.samsaz.canvasmemories.R
@@ -29,8 +26,8 @@ class MemoryView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
     init {
         setOnClickListener {
-            memory?.let {
-                eventListener?.invoke(MemoryEvent.Mutate(it, false))
+            memory?.let { memory ->
+                eventListener?.invoke(MemoryEvent.Mutate(memory, false))
             }
         }
 

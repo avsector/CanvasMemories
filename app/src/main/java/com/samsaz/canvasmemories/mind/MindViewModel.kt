@@ -15,7 +15,7 @@ import kotlin.random.Random
  * Created and maintained by Hamid Moazzami
  */
 
-class MindViewModel: ViewModel() {
+class MindViewModel : ViewModel() {
     private val memoryList = SparseArrayCompat<Memory>()
     private val eventStack = Stack<MemoryEvent>()
     private var identifier: Int = 0
@@ -57,39 +57,6 @@ class MindViewModel: ViewModel() {
             eventStack.push(event)
     }
 
-    private fun addNewMemory(memory: Memory) {
-        memoryList.put(memory.id, memory)
-        updateMemoriesLiveData(memory)
-    }
-
-    fun nextMemoryType(state: MemoryType?): MemoryType? {
-        when(state) {
-            MemoryType.Circle -> return MemoryType.Triangle
-            MemoryType.Triangle -> return MemoryType.Square
-            MemoryType.Square -> return MemoryType.Circle
-        }
-
-        return null
-    }
-
-    fun updateMemoryState(memory: Memory, newState: MemoryState) {
-        val mem = memoryList[memory.id] ?: return
-
-        val newMem = mem.copy(state = newState)
-        memoryList.put(newMem.id, newMem)
-        updateMemoriesLiveData(newMem)
-    }
-
-    fun updateMemoryState(memories: List<Memory>, newState: MemoryState) {
-        val newList = memories.map {
-            it.copy(state = newState)
-        }
-        newList.forEach {
-            memoryList.put(it.id, it)
-        }
-        updateMemoriesLiveData(newList.asSequence())
-    }
-
     fun undo() {
         if (eventStack.isEmpty())
             return
@@ -105,42 +72,19 @@ class MindViewModel: ViewModel() {
         if (undoEvent != null) {
             onMemoryEvent(undoEvent, true)
         }
+    }
 
+    fun navigate(to: Screen) {
+        screenLiveData.value = to
     }
 
     fun newMemory(type: MemoryType, frameDimension: Pair<Int, Int>) {
         val (x, y) = getMemoryViewPosition(frameDimension)
-        onMemoryEvent(
-            MemoryEvent.Add(
-                Memory(
-                    ++identifier,
-                    x,
-                    y,
-                    MemoryState.Bright(type)
-                )
-            ))
+        onMemoryEvent(MemoryEvent.Add(Memory(++identifier, x, y, MemoryState.Bright(type))))
     }
 
     fun created() {
         memoriesLiveData.value = memoryList.iterator().asSequence()
-    }
-
-    private fun updateMemoriesLiveData(memory: Memory) {
-        updateMemoriesLiveData(sequenceOf(memory))
-    }
-
-    private fun updateMemoriesLiveData(sequence: Sequence<Memory>) {
-        if (memoriesLiveData.hasActiveObservers()) {
-            memoriesLiveData.value = sequence
-        } else {
-            memoriesLiveData.value = memoriesLiveData.value?.plus(sequence)
-        }
-    }
-
-    fun getMemoryViewPosition(frameDimension: Pair<Int, Int>): Pair<Int, Int> {
-        val x = Random.nextInt(from = 0, until = frameDimension.first)
-        val y = Random.nextInt(from = 0, until = frameDimension.second)
-        return x to y
     }
 
     fun getMemoriesLiveData(): LiveData<Sequence<Memory>> {
@@ -162,7 +106,54 @@ class MindViewModel: ViewModel() {
         }.filter { it.key !is MemoryType.None }.toList()
     }
 
-    fun navigate(to: Screen) {
-        screenLiveData.value = to
+    private fun addNewMemory(memory: Memory) {
+        memoryList.put(memory.id, memory)
+        updateMemoriesLiveData(memory)
+    }
+
+    private fun nextMemoryType(state: MemoryType?): MemoryType? {
+        when (state) {
+            MemoryType.Circle -> return MemoryType.Triangle
+            MemoryType.Triangle -> return MemoryType.Square
+            MemoryType.Square -> return MemoryType.Circle
+        }
+
+        return null
+    }
+
+    private fun updateMemoryState(memory: Memory, newState: MemoryState) {
+        val mem = memoryList[memory.id] ?: return
+
+        val newMem = mem.copy(state = newState)
+        memoryList.put(newMem.id, newMem)
+        updateMemoriesLiveData(newMem)
+    }
+
+    private fun updateMemoryState(memories: List<Memory>, newState: MemoryState) {
+        val newList = memories.map {
+            it.copy(state = newState)
+        }
+        newList.forEach {
+            memoryList.put(it.id, it)
+        }
+        updateMemoriesLiveData(newList.asSequence())
+    }
+
+    private fun updateMemoriesLiveData(memory: Memory) {
+        updateMemoriesLiveData(sequenceOf(memory))
+    }
+
+    private fun updateMemoriesLiveData(sequence: Sequence<Memory>) {
+        if (memoriesLiveData.hasActiveObservers()) {
+            memoriesLiveData.value = sequence
+        } else {
+            memoriesLiveData.value = memoriesLiveData.value?.plus(sequence)
+        }
+    }
+
+    private fun getMemoryViewPosition(frameDimension: Pair<Int, Int>): Pair<Int, Int> {
+        val x = Random.nextInt(from = 0, until = frameDimension.first)
+        val y = Random.nextInt(from = 0, until = frameDimension.second)
+        return x to y
     }
 }

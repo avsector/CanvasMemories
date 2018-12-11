@@ -39,7 +39,7 @@ class SingleLiveEvent<T>: MutableLiveData<T>() {
     @MainThread
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
         // Observe the internal MutableLiveData
-        super.observe(owner, Observer<T>() {
+        super.observe(owner, Observer<T> {
             if (mPending.compareAndSet(true, false)) {
                 observer.onChanged(it)
             }
@@ -55,6 +55,7 @@ class SingleLiveEvent<T>: MutableLiveData<T>() {
     /**
      * Used for cases where T is Void, to make calls cleaner.
      */
+    @Suppress("unused")
     @MainThread
     fun call() {
         value = null
