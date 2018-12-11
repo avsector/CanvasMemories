@@ -7,6 +7,7 @@ import android.graphics.Path
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
+import com.samsaz.canvasmemories.R
 import com.samsaz.canvasmemories.model.Memory
 import com.samsaz.canvasmemories.model.MemoryEvent
 import com.samsaz.canvasmemories.model.MemoryState
@@ -16,15 +17,14 @@ import com.samsaz.canvasmemories.model.MemoryType
  * Copyright 2018
  * Created and maintained by Hamid Moazzami
  */
-class MemoryView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null,
-                                           var memory: Memory? = null): View(context, attributeSet){
+class MemoryView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
+                                           var memory: Memory? = null): View(context, attrs){
 
-    val paint = Paint().apply {
-        color = android.graphics.Color.RED
-        isAntiAlias = true
+    private val defaultType: MemoryType
+    private val drawers by lazy(LazyThreadSafetyMode.NONE) {
+        mapOf(MemoryType.Square to SquareDrawer(width), MemoryType.Circle to CircleDrawer(width),
+            MemoryType.Triangle to TriangleDrawer(width))
     }
-    val path = Path()
-    var rect: Rect? = null
     var eventListener: ((MemoryEvent) -> Unit)? = null
 
     init {
@@ -32,7 +32,6 @@ class MemoryView @JvmOverloads constructor(context: Context, attributeSet: Attri
             memory?.let {
                 eventListener?.invoke(MemoryEvent.Mutate(it, false))
             }
-
         }
 
         setOnLongClickListener {
@@ -41,24 +40,28 @@ class MemoryView @JvmOverloads constructor(context: Context, attributeSet: Attri
             }
             true
         }
+
+        if (attrs != null) {
+            val a = context.obtainStyledAttributes(attrs, R.styleable.MemoryView)
+            val type = a.getString(R.styleable.MemoryView_memoryType)
+            defaultType = when (type?.toLowerCase()) {
+                "square" -> MemoryType.Square
+                "triangle" -> MemoryType.Triangle
+                "circle" -> MemoryType.Circle
+                else -> MemoryType.None
+            }
+            a.recycle()
+        } else {
+            defaultType = MemoryType.None
+        }
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas ?: return
 
-        val type = (memory?.state as? MemoryState.Bright)?.type
-        when (type) {
-            MemoryType.Triangle -> canvas.drawPath(configurePath(width.toFloat(), path), paint)
-            MemoryType.Circle -> canvas.drawCircle(width/2f, height/2f, width/2f, paint)
-            MemoryType.Square -> {
-                if (rect == null)
-                    rect = Rect(0, 0, width, height)
-                rect?.let {
-                    canvas.drawRect(it, paint)
-                }
-            }
-        }
+        val type = (memory?.state as? MemoryState.Bright)?.type ?: defaultType
+        drawers[type]?.draw(canvas)
     }
 
     fun update(memory: Memory) {
@@ -69,17 +72,5 @@ class MemoryView @JvmOverloads constructor(context: Context, attributeSet: Attri
             visibility = VISIBLE
             invalidate()
         }
-    }
-
-    fun getHeight(width: Double): Float {
-        return Math.sqrt((Math.pow(width, 2.0) - Math.pow((width / 2), 2.0))).toFloat()
-    }
-
-    fun configurePath(sideLength: Float, path: Path): Path {
-        path.moveTo(0f, sideLength)
-        path.lineTo(sideLength / 2f, sideLength - getHeight(sideLength.toDouble()))
-        path.lineTo(sideLength, sideLength)
-
-        return path
     }
 }

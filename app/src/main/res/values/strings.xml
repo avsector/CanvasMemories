@@ -5,4 +5,8 @@
     <string name="triangles">Triangles: %d</string>
     <string name="deleteAll">Delete All</string>
     <string name="editor">Editor</string>
+    <string name="add">Add:</string>
+    <string name="blankMindNotice">Your mind is blank right now</string>
+    <string name="undo">Undo</string>
+    <string name="stats">Stats</string>
 </resources>

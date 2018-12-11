@@ -45,5 +45,10 @@ class MindStatsFragment: Fragment() {
         btnEditor.setOnClickListener {
             viewModel.navigate(to = Screen.Editor)
         }
+        tvBlankMind.visibility = if (adapter.items.isEmpty()) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
     }
 }

@@ -1,33 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/frame"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="#0000FF">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/bottomBarHeight"
         android:layout_gravity="bottom"
         android:gravity="center"
-        android:background="#CCC">
+        android:paddingStart="@dimen/bottomBarPaddingHorizontal"
+        android:paddingEnd="@dimen/bottomBarPaddingHorizontal"
+        android:background="@color/bottomBarBackground">
 
-        <Button
-            android:id="@+id/memoryButton"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add"/>
+            android:text="@string/add"
+            android:layout_marginEnd="@dimen/bottomBarPaddingHorizontal"/>
+
+        <com.samsaz.canvasmemories.ui.MemoryView
+            android:id="@+id/addCircleMemoryView"
+            style="@style/MemoryAddStyle"
+            app:memoryType="circle" />
+
+        <com.samsaz.canvasmemories.ui.MemoryView
+            android:id="@+id/addTriangleMemoryView"
+            style="@style/MemoryAddStyle"
+            app:memoryType="triangle"
+            android:layout_marginStart="@dimen/interButtonsMargin"/>
+
+        <com.samsaz.canvasmemories.ui.MemoryView
+            android:id="@+id/addSquareMemoryView"
+            style="@style/MemoryAddStyle"
+            app:memoryType="square"
+            android:layout_marginStart="@dimen/interButtonsMargin"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/undo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Undo"/>
+            android:text="@string/undo"/>
 
         <Button
             android:id="@+id/stats"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Stats"/>
+            android:text="@string/stats"/>
 
     </LinearLayout>
 </FrameLayout>

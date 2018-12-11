@@ -30,6 +30,13 @@ class MindEditorFragment : Fragment() {
     private val viewEventListener = { event: MemoryEvent ->
         viewModel.onMemoryEvent(event)
     }
+    private val frameDimensions by lazy(LazyThreadSafetyMode.NONE) {
+        val bottomBarHeight = resources.getDimensionPixelSize(R.dimen.bottomBarHeight)
+        val memorySize = resources.getDimensionPixelSize(R.dimen.memorySize)
+        val w = resources.displayMetrics.widthPixels - memorySize
+        val h = frame.measuredHeight - bottomBarHeight - memorySize
+        w to h
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +57,19 @@ class MindEditorFragment : Fragment() {
     }
 
     private fun setupView(view: View) = with(view) {
-        view.memoryButton.setOnClickListener {
-            viewModel.newMemory(MemoryType.Circle, getFrameDimensions())
+        val addMemoryClickListener = { view: View ->
+            val type = when(view.id) {
+                R.id.addCircleMemoryView -> MemoryType.Circle
+                R.id.addSquareMemoryView -> MemoryType.Square
+                R.id.addTriangleMemoryView -> MemoryType.Triangle
+                else -> MemoryType.None
+            }
+            viewModel.newMemory(type, frameDimensions)
         }
+        addCircleMemoryView.setOnClickListener(addMemoryClickListener)
+        addSquareMemoryView.setOnClickListener(addMemoryClickListener)
+        addTriangleMemoryView.setOnClickListener(addMemoryClickListener)
+
         view.undo.setOnClickListener {
             viewModel.undo()
         }
@@ -68,14 +85,6 @@ class MindEditorFragment : Fragment() {
                 updateMemoryState(memory)
             }
         })
-    }
-
-    private fun getFrameDimensions(): Pair<Int, Int> {
-        val bottomBarHeight = resources.getDimensionPixelSize(R.dimen.bottomBarHeight)
-        val memorySize = resources.getDimensionPixelSize(R.dimen.memorySize)
-        val w = resources.displayMetrics.widthPixels - memorySize
-        val h = frame.measuredHeight - bottomBarHeight - memorySize
-        return w to h
     }
 
     private fun addMemoryView(memory: Memory) {

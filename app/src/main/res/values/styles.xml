@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="MemoryAddStyle">
+        <item name="android:layout_width">@dimen/memoryAddButtonSize</item>
+        <item name="android:layout_height">@dimen/memoryAddButtonSize</item>
+    </style>
+
 </resources>

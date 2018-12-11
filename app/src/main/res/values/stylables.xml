@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MemoryView">
+        <attr name="memoryType" format="string" />
+        <attr name="showPlus" format="boolean"/>
+    </declare-styleable>
+</resources>

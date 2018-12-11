@@ -8,4 +8,8 @@
     <dimen name="itemMemoryTypeMemorySize">40dp</dimen>
     <dimen name="itemMemoryTypeTitlePadding">12dp</dimen>
     <dimen name="itemMemoryTypeTitleSize">17sp</dimen>
+    <dimen name="memoryAddButtonSize">32dp</dimen>
+    <dimen name="bottomBarPaddingHorizontal">8dp</dimen>
+    <dimen name="interButtonsMargin">8dp</dimen>
+    <dimen name="emptyNoticeTextSize">18sp</dimen>
 </resources>
