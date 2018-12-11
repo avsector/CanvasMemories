@@ -49,6 +49,11 @@ class MindCanvasFragment : Fragment() {
         view.undo.setOnClickListener {
             viewModel.undo()
         }
+        view.stats.setOnClickListener {
+            val fragment = MindStatsFragment()
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container,
+                fragment).addToBackStack("Name").commit()
+        }
 
         viewModel.created()
         return view

@@ -17,7 +17,7 @@ import kotlin.random.Random
  */
 
 class MindViewModel: ViewModel() {
-    private val memoryList = SparseArrayCompat<Memory>()
+    internal val memoryList = SparseArrayCompat<Memory>()
     private val eventStack = Stack<MemoryEvent>()
     private var identifier: Int = 0
     internal val memoriesLiveData = SingleLiveEvent<Sequence<Memory>>().apply {

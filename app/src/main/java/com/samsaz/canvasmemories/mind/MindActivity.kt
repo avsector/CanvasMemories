@@ -21,4 +21,9 @@ class MindActivity: AppCompatActivity() {
                 .commitNow()
         }
     }
+
+    override fun onBackPressed() {
+        if (!supportFragmentManager.popBackStackImmediate())
+            super.onBackPressed()
+    }
 }
