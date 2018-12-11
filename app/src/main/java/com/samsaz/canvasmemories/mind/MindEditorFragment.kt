@@ -82,6 +82,13 @@ class MindEditorFragment : Fragment() {
                 updateMemoryState(memory)
             }
         })
+        viewModel.getUndoEnabledLiveData().observe(this, Observer {
+            btnUndo.visibility = if (it) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+        })
     }
 
     private fun addMemoryView(memory: Memory) {

@@ -25,6 +25,9 @@ class MindViewModel : ViewModel() {
     private val screenLiveData = MutableLiveData<Screen>().apply {
         value = Screen.Editor
     }
+    private val undoEnabledLiveData = MutableLiveData<Boolean>().apply {
+        value = false
+    }
 
     fun onMemoryEvent(event: MemoryEvent, fromUndo: Boolean = false) {
         when (event) {
@@ -57,14 +60,11 @@ class MindViewModel : ViewModel() {
         }
 
         if (!fromUndo)
-            eventStack.push(event)
+            addToEventStack(event)
     }
 
     fun undo() {
-        if (eventStack.isEmpty())
-            return
-
-        val event = eventStack.pop()
+        val event = popFromEventStack()
         val undoEvent = when (event) {
             is MemoryEvent.Add -> MemoryEvent.Erase(event.memory)
             is MemoryEvent.Forget -> MemoryEvent.Remember(event.memories)
@@ -96,6 +96,10 @@ class MindViewModel : ViewModel() {
 
     fun getScreenLiveData(): LiveData<Screen> {
         return screenLiveData
+    }
+
+    fun getUndoEnabledLiveData(): LiveData<Boolean> {
+        return undoEnabledLiveData
     }
 
     fun getMemoriesGroupedByType(): List<Pair<MemoryType, List<Memory>>> {
@@ -162,5 +166,20 @@ class MindViewModel : ViewModel() {
         val x = Random.nextInt(from = 0, until = frameDimension.first)
         val y = Random.nextInt(from = 0, until = frameDimension.second)
         return x to y
+    }
+
+    private fun addToEventStack(event: MemoryEvent) {
+        eventStack.push(event)
+        updateUndoLiveData()
+    }
+
+    private fun popFromEventStack(): MemoryEvent? {
+        val event = eventStack.pop()
+        updateUndoLiveData()
+        return event
+    }
+
+    private fun updateUndoLiveData() {
+        undoEnabledLiveData.value = eventStack.isNotEmpty()
     }
 }
