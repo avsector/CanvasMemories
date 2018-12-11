@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.samsaz.canvasmemories.R
 import com.samsaz.canvasmemories.model.Memory
+import com.samsaz.canvasmemories.model.MemoryEvent
 import com.samsaz.canvasmemories.model.MemoryState
 import com.samsaz.canvasmemories.model.MemoryType
 import kotlinx.android.synthetic.main.item_memory_type.view.*
@@ -17,11 +18,22 @@ import kotlinx.android.synthetic.main.item_memory_type.view.*
 
 class MemoryTypeAdapter: RecyclerView.Adapter<MemoryTypeAdapter.ViewHolder>() {
     var items: List<Pair<MemoryType, List<Memory>>> = emptyList()
+    var memoryEventListener: ((MemoryEvent) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_memory_type, parent,
             false)
-        return ViewHolder(view)
+        val viewHolder = ViewHolder(view)
+        view.btnDeleteAll.setOnClickListener {
+            val position = viewHolder.adapterPosition
+            val list = items[position].second
+            items = items.filterIndexed { index, _ ->
+                index != position
+            }
+            notifyDataSetChanged()
+            memoryEventListener?.invoke(MemoryEvent.Remove(list))
+        }
+        return viewHolder
     }
 
     override fun getItemCount() = items.size

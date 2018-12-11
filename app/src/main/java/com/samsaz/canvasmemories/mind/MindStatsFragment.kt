@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.samsaz.canvasmemories.R
+import com.samsaz.canvasmemories.model.MemoryEvent
 import com.samsaz.canvasmemories.model.Screen
-import kotlinx.android.synthetic.main.fragment_mind_stats.*
 import kotlinx.android.synthetic.main.fragment_mind_stats.view.*
 
 /**
@@ -21,12 +21,16 @@ class MindStatsFragment: Fragment() {
 
     private lateinit var viewModel: MindViewModel
     private val adapter = MemoryTypeAdapter()
+    private val memoryEventListener = { event: MemoryEvent ->
+        viewModel.onMemoryEvent(event)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel = ViewModelProviders.of(requireActivity())[MindViewModel::class.java]
         adapter.items = viewModel.getMemoriesGroupedByType()
+        adapter.memoryEventListener = memoryEventListener
     }
 
     override fun onCreateView(

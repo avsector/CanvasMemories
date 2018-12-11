@@ -32,8 +32,7 @@ class MindViewModel: ViewModel() {
                 addNewMemory(event.memory)
             }
             is MemoryEvent.Remove -> {
-                val mem = event.memory
-                updateMemoryState(mem, MemoryState.Faded)
+                updateMemoryState(event.memories, MemoryState.Faded)
             }
             is MemoryEvent.Mutate -> {
                 val type = (event.memory.state as? MemoryState.Bright)?.type
@@ -47,8 +46,10 @@ class MindViewModel: ViewModel() {
                 }
             }
             is MemoryEvent.UnRemove -> {
-                val newState = event.memory.state
-                updateMemoryState(event.memory, newState)
+                if (event.memories.isEmpty())
+                    return
+                val newState = event.memories[0].state
+                updateMemoryState(event.memories, newState)
             }
         }
 
@@ -58,7 +59,7 @@ class MindViewModel: ViewModel() {
 
     private fun addNewMemory(memory: Memory) {
         memoryList.put(memory.id, memory)
-        updateLiveData(memory)
+        updateMemoriesLiveData(memory)
     }
 
     fun nextMemoryType(state: MemoryType?): MemoryType? {
@@ -72,12 +73,21 @@ class MindViewModel: ViewModel() {
     }
 
     fun updateMemoryState(memory: Memory, newState: MemoryState) {
-        val mem = memoryList[memory.id]
-        mem ?: return
+        val mem = memoryList[memory.id] ?: return
 
         val newMem = mem.copy(state = newState)
         memoryList.put(newMem.id, newMem)
-        updateLiveData(newMem)
+        updateMemoriesLiveData(newMem)
+    }
+
+    fun updateMemoryState(memories: List<Memory>, newState: MemoryState) {
+        val newList = memories.map {
+            it.copy(state = newState)
+        }
+        newList.forEach {
+            memoryList.put(it.id, it)
+        }
+        updateMemoriesLiveData(newList.asSequence())
     }
 
     fun undo() {
@@ -87,7 +97,7 @@ class MindViewModel: ViewModel() {
         val event = eventStack.pop()
         val undoEvent = when (event) {
             is MemoryEvent.Add -> MemoryEvent.Remove(event.memory)
-            is MemoryEvent.Remove -> MemoryEvent.UnRemove(event.memory)
+            is MemoryEvent.Remove -> MemoryEvent.UnRemove(event.memories)
             is MemoryEvent.Mutate -> MemoryEvent.Mutate(event.memory, true)
             else -> null
         }
@@ -115,11 +125,15 @@ class MindViewModel: ViewModel() {
         memoriesLiveData.value = memoryList.iterator().asSequence()
     }
 
-    fun updateLiveData(memory: Memory) {
+    private fun updateMemoriesLiveData(memory: Memory) {
+        updateMemoriesLiveData(sequenceOf(memory))
+    }
+
+    private fun updateMemoriesLiveData(sequence: Sequence<Memory>) {
         if (memoriesLiveData.hasActiveObservers()) {
-            memoriesLiveData.value = sequenceOf(memory)
+            memoriesLiveData.value = sequence
         } else {
-            memoriesLiveData.value = memoriesLiveData.value?.plus(memory)
+            memoriesLiveData.value = memoriesLiveData.value?.plus(sequence)
         }
     }
 
