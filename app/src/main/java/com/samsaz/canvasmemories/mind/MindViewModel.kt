@@ -2,11 +2,9 @@ package com.samsaz.canvasmemories.mind
 
 import androidx.collection.SparseArrayCompat
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.samsaz.canvasmemories.model.Memory
-import com.samsaz.canvasmemories.model.MemoryEvent
-import com.samsaz.canvasmemories.model.MemoryState
-import com.samsaz.canvasmemories.model.MemoryType
+import com.samsaz.canvasmemories.model.*
 import com.samsaz.canvasmemories.util.SingleLiveEvent
 import com.samsaz.canvasmemories.util.iterator
 import java.util.*
@@ -23,6 +21,9 @@ class MindViewModel: ViewModel() {
     private var identifier: Int = 0
     private val memoriesLiveData = SingleLiveEvent<Sequence<Memory>>().apply {
         value = emptySequence()
+    }
+    private val screenLiveData = MutableLiveData<Screen>().apply {
+        value = Screen.Editor
     }
 
     fun onMemoryEvent(event: MemoryEvent, fromUndo: Boolean = false) {
@@ -132,6 +133,10 @@ class MindViewModel: ViewModel() {
         return memoriesLiveData
     }
 
+    fun getScreenLiveData(): LiveData<Screen> {
+        return screenLiveData
+    }
+
     fun getMemoriesGroupedByType(): List<Pair<MemoryType, List<Memory>>> {
         return memoryList.iterator().asSequence().groupBy {
             val state = it.state
@@ -141,5 +146,9 @@ class MindViewModel: ViewModel() {
                 MemoryType.None
             }
         }.filter { it.key !is MemoryType.None }.toList()
+    }
+
+    fun navigate(to: Screen) {
+        screenLiveData.value = to
     }
 }

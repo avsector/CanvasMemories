@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.samsaz.canvasmemories.R
+import com.samsaz.canvasmemories.model.Screen
+import kotlinx.android.synthetic.main.fragment_mind_stats.*
 import kotlinx.android.synthetic.main.fragment_mind_stats.view.*
 
 /**
@@ -33,10 +35,15 @@ class MindStatsFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_mind_stats, container, false)
-        with(view) {
-            rvList.layoutManager = LinearLayoutManager(context)
-            rvList.adapter = adapter
-        }
+        setupView(view)
         return view
+    }
+
+    private fun setupView(view: View) = with(view) {
+        rvList.layoutManager = LinearLayoutManager(context)
+        rvList.adapter = adapter
+        btnEditor.setOnClickListener {
+            viewModel.navigate(to = Screen.Editor)
+        }
     }
 }

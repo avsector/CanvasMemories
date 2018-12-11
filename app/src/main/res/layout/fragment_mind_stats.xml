@@ -17,7 +17,7 @@
         android:background="@color/bottomBarBackground">
 
         <Button
-            android:id="@+id/memoryButton"
+            android:id="@+id/btnEditor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/editor"/>

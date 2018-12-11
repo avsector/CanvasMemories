@@ -13,16 +13,17 @@ import com.samsaz.canvasmemories.R
 import com.samsaz.canvasmemories.model.Memory
 import com.samsaz.canvasmemories.model.MemoryEvent
 import com.samsaz.canvasmemories.model.MemoryType
+import com.samsaz.canvasmemories.model.Screen
 import com.samsaz.canvasmemories.ui.MemoryView
-import kotlinx.android.synthetic.main.fragment_mind_canvas.*
-import kotlinx.android.synthetic.main.fragment_mind_canvas.view.*
+import kotlinx.android.synthetic.main.fragment_mind_editor.*
+import kotlinx.android.synthetic.main.fragment_mind_editor.view.*
 
 /**
  * Copyright 2018
  * Created and maintained by Hamid Moazzami
  */
 
-class MindCanvasFragment : Fragment() {
+class MindEditorFragment : Fragment() {
 
     private val viewList = SparseArrayCompat<MemoryView>()
     private lateinit var viewModel: MindViewModel
@@ -41,7 +42,14 @@ class MindCanvasFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val view = inflater.inflate(R.layout.fragment_mind_canvas, container, false)
+        val view = inflater.inflate(R.layout.fragment_mind_editor, container, false)
+        setupView(view)
+        viewModel.created()
+
+        return view
+    }
+
+    private fun setupView(view: View) = with(view) {
         view.memoryButton.setOnClickListener {
             viewModel.newMemory(MemoryType.Circle, getFrameDimensions())
         }
@@ -49,13 +57,8 @@ class MindCanvasFragment : Fragment() {
             viewModel.undo()
         }
         view.stats.setOnClickListener {
-            val fragment = MindStatsFragment()
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.container,
-                fragment).addToBackStack("Name").commit()
+            viewModel.navigate(to = Screen.Stats)
         }
-
-        viewModel.created()
-        return view
     }
 
     override fun onStart() {
