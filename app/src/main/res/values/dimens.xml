@@ -2,4 +2,10 @@
 <resources>
     <dimen name="bottomBarHeight">40dp</dimen>
     <dimen name="memorySize">20dp</dimen>
+    <dimen name="itemMemoryTypeRadius">10dp</dimen>
+    <dimen name="itemMemoryTypeStroke">1dp</dimen>
+    <dimen name="itemMemoryTypePadding">8dp</dimen>
+    <dimen name="itemMemoryTypeMemorySize">40dp</dimen>
+    <dimen name="itemMemoryTypeTitlePadding">12dp</dimen>
+    <dimen name="itemMemoryTypeTitleSize">17sp</dimen>
 </resources>

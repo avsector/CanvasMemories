@@ -1,7 +1,6 @@
 package com.samsaz.canvasmemories.mind
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +9,11 @@ import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.samsaz.canvasmemories.ui.MemoryView
 import com.samsaz.canvasmemories.R
 import com.samsaz.canvasmemories.model.Memory
 import com.samsaz.canvasmemories.model.MemoryEvent
 import com.samsaz.canvasmemories.model.MemoryType
+import com.samsaz.canvasmemories.ui.MemoryView
 import kotlinx.android.synthetic.main.fragment_mind_canvas.*
 import kotlinx.android.synthetic.main.fragment_mind_canvas.view.*
 
@@ -61,15 +60,14 @@ class MindCanvasFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.memoriesLiveData.observe(this, Observer {
-            it?.forEach {
-                Log.d("SEQ", "Updated ${it.id}")
-                updateMemoryState(it)
+        viewModel.getMemoriesLiveData().observe(this, Observer {
+            it?.forEach { memory ->
+                updateMemoryState(memory)
             }
         })
     }
 
-    fun getFrameDimensions(): Pair<Int, Int> {
+    private fun getFrameDimensions(): Pair<Int, Int> {
         val bottomBarHeight = resources.getDimensionPixelSize(R.dimen.bottomBarHeight)
         val memorySize = resources.getDimensionPixelSize(R.dimen.memorySize)
         val w = resources.displayMetrics.widthPixels - memorySize
@@ -77,7 +75,7 @@ class MindCanvasFragment : Fragment() {
         return w to h
     }
 
-    fun addMemoryView(memory: Memory) {
+    private fun addMemoryView(memory: Memory) {
         val memorySize = resources.getDimensionPixelSize(R.dimen.memorySize)
         val lp = FrameLayout.LayoutParams(memorySize, memorySize)
         lp.leftMargin = memory.x
@@ -89,7 +87,7 @@ class MindCanvasFragment : Fragment() {
         view.eventListener = viewEventListener
     }
 
-    fun updateMemoryState(memory: Memory) {
+    private fun updateMemoryState(memory: Memory) {
         val view = viewList[memory.id]
         if (view != null)
             view.update(memory)

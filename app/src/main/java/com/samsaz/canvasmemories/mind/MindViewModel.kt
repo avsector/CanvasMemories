@@ -1,6 +1,7 @@
 package com.samsaz.canvasmemories.mind
 
 import androidx.collection.SparseArrayCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.samsaz.canvasmemories.model.Memory
 import com.samsaz.canvasmemories.model.MemoryEvent
@@ -17,10 +18,10 @@ import kotlin.random.Random
  */
 
 class MindViewModel: ViewModel() {
-    internal val memoryList = SparseArrayCompat<Memory>()
+    private val memoryList = SparseArrayCompat<Memory>()
     private val eventStack = Stack<MemoryEvent>()
     private var identifier: Int = 0
-    internal val memoriesLiveData = SingleLiveEvent<Sequence<Memory>>().apply {
+    private val memoriesLiveData = SingleLiveEvent<Sequence<Memory>>().apply {
         value = emptySequence()
     }
 
@@ -125,5 +126,20 @@ class MindViewModel: ViewModel() {
         val x = Random.nextInt(from = 0, until = frameDimension.first)
         val y = Random.nextInt(from = 0, until = frameDimension.second)
         return x to y
+    }
+
+    fun getMemoriesLiveData(): LiveData<Sequence<Memory>> {
+        return memoriesLiveData
+    }
+
+    fun getMemoriesGroupedByType(): List<Pair<MemoryType, List<Memory>>> {
+        return memoryList.iterator().asSequence().groupBy {
+            val state = it.state
+            if (state is MemoryState.Bright) {
+                state.type
+            } else {
+                MemoryType.None
+            }
+        }.filter { it.key !is MemoryType.None }.toList()
     }
 }

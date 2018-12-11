@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/itemMemoryTypePadding"
+    android:layout_margin="@dimen/itemMemoryTypePadding"
+    android:background="@drawable/bg_rounded_rect">
+
+    <com.samsaz.canvasmemories.ui.MemoryView
+        android:id="@+id/memoryView"
+        android:layout_width="@dimen/itemMemoryTypeMemorySize"
+        android:layout_height="@dimen/itemMemoryTypeMemorySize"
+        android:layout_gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/itemMemoryTypeMemorySize"
+        android:paddingStart="@dimen/itemMemoryTypeTitlePadding"
+        android:paddingEnd="@dimen/itemMemoryTypePadding"
+        android:textSize="@dimen/itemMemoryTypeTitleSize"
+        android:textColor="@color/textImportant"
+        android:layout_gravity="center_vertical" />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/btnDeleteAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/deleteAll"
+        android:layout_gravity="end|center_vertical"/>
+
+</FrameLayout>

@@ -14,4 +14,5 @@ sealed class MemoryType {
     object Square: MemoryType()
     object Circle: MemoryType()
     object Triangle: MemoryType()
+    object None: MemoryType()
 }

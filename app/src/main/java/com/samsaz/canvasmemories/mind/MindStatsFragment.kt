@@ -6,11 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.samsaz.canvasmemories.R
-import com.samsaz.canvasmemories.model.Memory
-import com.samsaz.canvasmemories.model.MemoryState
-import com.samsaz.canvasmemories.model.MemoryType
-import com.samsaz.canvasmemories.util.iterator
 import kotlinx.android.synthetic.main.fragment_mind_stats.view.*
 
 /**
@@ -20,22 +17,16 @@ import kotlinx.android.synthetic.main.fragment_mind_stats.view.*
 
 class MindStatsFragment: Fragment() {
 
-    lateinit var viewModel: MindViewModel
-    lateinit var groups: Map<MemoryType?, List<Memory>>
+    private lateinit var viewModel: MindViewModel
+    private val adapter = MemoryTypeAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel = ViewModelProviders.of(requireActivity())[MindViewModel::class.java]
-        groups = viewModel.memoryList.iterator().asSequence().groupBy {
-            val state = it.state
-            if (state is MemoryState.Bright) {
-                state.type
-            } else {
-                null
-            }
-        }
+        adapter.items = viewModel.getMemoriesGroupedByType()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,12 +34,8 @@ class MindStatsFragment: Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_mind_stats, container, false)
         with(view) {
-            tvCircles.text = getString(R.string.circles,
-                groups[MemoryType.Circle]?.size ?: 0)
-            tvSquares.text = getString(R.string.squares,
-                groups[MemoryType.Square]?.size ?: 0)
-            tvTriangles.text = getString(R.string.triangles,
-                groups[MemoryType.Triangle]?.size ?: 0)
+            rvList.layoutManager = LinearLayoutManager(context)
+            rvList.adapter = adapter
         }
         return view
     }

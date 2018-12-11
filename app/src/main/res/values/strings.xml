@@ -3,4 +3,6 @@
     <string name="circles">Circles: %d</string>
     <string name="squares">Squares: %d</string>
     <string name="triangles">Triangles: %d</string>
+    <string name="deleteAll">Delete All</string>
+    <string name="editor">Editor</string>
 </resources>
