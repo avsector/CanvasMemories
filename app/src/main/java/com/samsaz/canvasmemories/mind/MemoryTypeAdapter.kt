@@ -31,7 +31,7 @@ class MemoryTypeAdapter: RecyclerView.Adapter<MemoryTypeAdapter.ViewHolder>() {
                 index != position
             }
             notifyDataSetChanged()
-            memoryEventListener?.invoke(MemoryEvent.Remove(list))
+            memoryEventListener?.invoke(MemoryEvent.Forget(list))
         }
         return viewHolder
     }

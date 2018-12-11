@@ -33,7 +33,7 @@ class MemoryView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
         setOnLongClickListener {
             memory?.let { memory ->
-                eventListener?.invoke(MemoryEvent.Remove(memory))
+                eventListener?.invoke(MemoryEvent.Forget(memory))
             }
             true
         }
