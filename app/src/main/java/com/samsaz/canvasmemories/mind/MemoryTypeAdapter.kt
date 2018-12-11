@@ -70,7 +70,7 @@ class MemoryTypeAdapter: RecyclerView.Adapter<MemoryTypeAdapter.ViewHolder>() {
             }
 
             itemView.memoryView.update(memory)
-            itemView.title.text = itemView.resources.getString(titleResId, size)
+            itemView.tvTitle.text = itemView.resources.getString(titleResId, size)
 
             itemView.btnDeleteAll.visibility = if (size > 0) {
                 View.VISIBLE

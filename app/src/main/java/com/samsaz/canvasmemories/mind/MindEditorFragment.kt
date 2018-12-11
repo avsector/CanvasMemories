@@ -67,10 +67,10 @@ class MindEditorFragment : Fragment() {
         addSquareMemoryView.setOnClickListener(addMemoryClickListener)
         addTriangleMemoryView.setOnClickListener(addMemoryClickListener)
 
-        view.undo.setOnClickListener {
+        view.btnUndo.setOnClickListener {
             viewModel.undo()
         }
-        view.stats.setOnClickListener {
+        view.btnStats.setOnClickListener {
             viewModel.navigate(to = Screen.Stats)
         }
     }
