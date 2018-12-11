@@ -13,3 +13,6 @@ Right about now, try to think of an extension to the class of your memories.
 
 Completely written in Kotlin. The architecture is MVVM which is implemented using Android architecture components (ViewModel, LiveData, and LifeCycle).
 Interactions are stored using a SparseArray to reduce the memory footprint and actions are kept safe in a Stack for easy retrieving. The app leverages the usage of Kotlin Collection APIs to achieve readability.
+
+### Tests
+This project has some unit tests that are available in `MindViewModelTest.kt`
