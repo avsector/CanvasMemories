@@ -7,7 +7,7 @@ import com.samsaz.canvasmemories.model.MemoryEvent
 import com.samsaz.canvasmemories.model.MemoryState
 import com.samsaz.canvasmemories.model.MemoryType
 import com.samsaz.canvasmemories.shared.LiveDataTestUtil
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 
@@ -26,6 +26,10 @@ class MindViewModelTest {
     fun getLastMemory(viewModel: MindViewModel): Memory? {
         val seq = LiveDataTestUtil.getValue(viewModel.getMemoriesLiveData())
         return seq?.last()
+    }
+
+    fun getSequence(viewModel: MindViewModel): Sequence<Memory>? {
+        return LiveDataTestUtil.getValue(viewModel.getMemoriesLiveData())
     }
 
     @Test
@@ -108,4 +112,66 @@ class MindViewModelTest {
         val newMem = getLastMemory(vm)
         assertEquals(newMem?.state, MemoryState.Erased)
     }
+
+    @Test
+    fun undoAddTest() {
+        val m = mem.copy()
+        val vm = MindViewModel()
+
+        vm.onMemoryEvent(MemoryEvent.Add(m))
+        vm.undo()
+        val newMem = getLastMemory(vm)
+        assertEquals(newMem?.state, MemoryState.Erased)
+    }
+
+    @Test
+    fun undoMutateTest() {
+        val m = mem.copy()
+        val vm = MindViewModel()
+
+        vm.onMemoryEvent(MemoryEvent.Add(m))
+        vm.onMemoryEvent(MemoryEvent.Mutate(m, false))
+        vm.undo()
+        val newMem = getLastMemory(vm)
+        assertEquals(m, newMem)
+    }
+
+    @Test
+    fun undoForgetTest() {
+        val m = mem.copy()
+        val vm = MindViewModel()
+
+        vm.onMemoryEvent(MemoryEvent.Add(m))
+        vm.onMemoryEvent(MemoryEvent.Forget(m))
+        vm.undo()
+        val newMem = getLastMemory(vm)
+        assertEquals(m, newMem)
+    }
+
+    @Test
+    fun undoNothingTest() {
+        val m = mem.copy()
+        val vm = MindViewModel()
+        vm.undo()
+        val seq = getSequence(vm)
+        assertEquals(seq?.firstOrNull(), null)
+    }
+
+    @Test
+    fun undoEnabledTest() {
+        val m = mem.copy()
+        val vm = MindViewModel()
+
+        var enabled = LiveDataTestUtil.getValue(vm.getUndoEnabledLiveData())
+        assertEquals(false, enabled)
+
+        vm.onMemoryEvent(MemoryEvent.Add(m))
+        enabled = LiveDataTestUtil.getValue(vm.getUndoEnabledLiveData())
+        assertEquals(true, enabled)
+
+        vm.undo()
+        enabled = LiveDataTestUtil.getValue(vm.getUndoEnabledLiveData())
+        assertEquals(false, enabled)
+    }
+
 }
