@@ -178,6 +178,9 @@ class MindViewModel : ViewModel() {
     }
 
     private fun popFromEventStack(): MemoryEvent? {
+        if (eventStack.isEmpty())
+            return null
+
         val event = eventStack.pop()
         updateUndoLiveData()
         return event

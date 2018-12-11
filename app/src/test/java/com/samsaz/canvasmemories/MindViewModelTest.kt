@@ -39,7 +39,7 @@ class MindViewModelTest {
 
         vm.onMemoryEvent(MemoryEvent.Add(m))
         val newMem = getLastMemory(vm)
-        assertEquals(newMem, m)
+        assertEquals(m, newMem)
     }
 
     @Test
@@ -53,19 +53,19 @@ class MindViewModelTest {
         vm.onMemoryEvent(MemoryEvent.Mutate(m, false))
         m = getLastMemory(vm)!!
         var type = (m.state as MemoryState.Bright).type
-        assertEquals(type, MemoryType.Triangle)
+        assertEquals(MemoryType.Triangle, type)
 
         // Triangle -> Square
         vm.onMemoryEvent(MemoryEvent.Mutate(m, false))
         m = getLastMemory(vm)!!
         type = (m.state as MemoryState.Bright).type
-        assertEquals(type, MemoryType.Square)
+        assertEquals(MemoryType.Square, type)
 
         // Square -> Circle
         vm.onMemoryEvent(MemoryEvent.Mutate(m, false))
         m = getLastMemory(vm)!!
         type = (m.state as MemoryState.Bright).type
-        assertEquals(type, MemoryType.Circle)
+        assertEquals(MemoryType.Circle, type)
     }
 
     @Test
@@ -73,9 +73,10 @@ class MindViewModelTest {
         val m = mem.copy()
         val vm = MindViewModel()
 
+        vm.onMemoryEvent(MemoryEvent.Add(m))
         vm.onMemoryEvent(MemoryEvent.Forget(m))
         val newMem = getLastMemory(vm)
-        assertEquals(newMem?.state, MemoryState.Faded)
+        assertEquals(MemoryState.Faded, newMem?.state)
     }
 
     @Test
@@ -83,10 +84,11 @@ class MindViewModelTest {
         val m = mem.copy()
         val vm = MindViewModel()
 
+        vm.onMemoryEvent(MemoryEvent.Add(m))
         vm.onMemoryEvent(MemoryEvent.Forget(m))
         vm.onMemoryEvent(MemoryEvent.Remember(listOf(m)))
         val newMem = getLastMemory(vm)!!
-        assertEquals(newMem.state, m.state)
+        assertEquals(m.state, newMem.state)
     }
 
     @Test
@@ -97,7 +99,7 @@ class MindViewModelTest {
         vm.onMemoryEvent(MemoryEvent.Add(m))
         vm.onMemoryEvent(MemoryEvent.Erase(m))
         val newMem = getLastMemory(vm)
-        assertEquals(newMem?.state, MemoryState.Erased)
+        assertEquals(MemoryState.Erased, newMem?.state)
     }
 
     // Beware: This test title is a bit scary
@@ -110,7 +112,7 @@ class MindViewModelTest {
         vm.onMemoryEvent(MemoryEvent.Erase(m))
         vm.onMemoryEvent(MemoryEvent.Remember(m))
         val newMem = getLastMemory(vm)
-        assertEquals(newMem?.state, MemoryState.Erased)
+        assertEquals(MemoryState.Erased, newMem?.state)
     }
 
     @Test
@@ -121,7 +123,7 @@ class MindViewModelTest {
         vm.onMemoryEvent(MemoryEvent.Add(m))
         vm.undo()
         val newMem = getLastMemory(vm)
-        assertEquals(newMem?.state, MemoryState.Erased)
+        assertEquals(MemoryState.Erased, newMem?.state)
     }
 
     @Test
@@ -133,7 +135,7 @@ class MindViewModelTest {
         vm.onMemoryEvent(MemoryEvent.Mutate(m, false))
         vm.undo()
         val newMem = getLastMemory(vm)
-        assertEquals(m, newMem)
+        assertEquals(newMem, m)
     }
 
     @Test
@@ -145,16 +147,15 @@ class MindViewModelTest {
         vm.onMemoryEvent(MemoryEvent.Forget(m))
         vm.undo()
         val newMem = getLastMemory(vm)
-        assertEquals(m, newMem)
+        assertEquals(newMem, m)
     }
 
     @Test
     fun undoNothingTest() {
-        val m = mem.copy()
         val vm = MindViewModel()
         vm.undo()
         val seq = getSequence(vm)
-        assertEquals(seq?.firstOrNull(), null)
+        assertEquals(null, seq?.firstOrNull())
     }
 
     @Test
