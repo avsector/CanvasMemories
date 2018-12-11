@@ -10,6 +10,8 @@ sealed class MemoryEvent {
         constructor(memory: Memory) : this(listOf(memory))
     }
     data class Mutate(val memory: Memory, val reverse: Boolean): MemoryEvent()
-    data class Remember(val memories: List<Memory>): MemoryEvent()
+    data class Remember(val memories: List<Memory>): MemoryEvent() {
+        constructor(memory: Memory) : this(listOf(memory))
+    }
     data class Erase(val memory: Memory): MemoryEvent()
 }
