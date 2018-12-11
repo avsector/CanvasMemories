@@ -141,11 +141,15 @@ class MindViewModel : ViewModel() {
     }
 
     private fun updateMemoryState(memories: List<Memory>, newState: MemoryState) {
-        val newList = memories.map {
-            it.copy(state = newState)
-        }
-        newList.forEach {
-            memoryList.put(it.id, it)
+        val newList = memories.mapNotNull {
+            val index = memoryList.indexOfKey(it.id)
+            if (index < 0)
+                null
+            else {
+                val newMem = it.copy(state = newState)
+                memoryList.setValueAt(index, newMem)
+                newMem
+            }
         }
         updateMemoriesLiveData(newList.asSequence())
     }
