@@ -13,7 +13,6 @@ import com.samsaz.canvasmemories.R
 import com.samsaz.canvasmemories.model.*
 import com.samsaz.canvasmemories.ui.MemoryView
 import kotlinx.android.synthetic.main.fragment_mind_editor.*
-import kotlinx.android.synthetic.main.fragment_mind_editor.view.*
 
 /**
  * Copyright 2018
@@ -45,15 +44,16 @@ class MindEditorFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val view = inflater.inflate(R.layout.fragment_mind_editor, container, false)
-        setupView(view)
-        viewModel.created()
-
-        return view
+        return inflater.inflate(R.layout.fragment_mind_editor, container, false)
     }
 
-    private fun setupView(view: View) = with(view) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView()
+        viewModel.created()
+    }
+
+    private fun setupView() {
         val addMemoryClickListener = { view: View ->
             val type = when(view.id) {
                 R.id.addCircleMemoryView -> MemoryType.Circle
@@ -67,10 +67,10 @@ class MindEditorFragment : Fragment() {
         addSquareMemoryView.setOnClickListener(addMemoryClickListener)
         addTriangleMemoryView.setOnClickListener(addMemoryClickListener)
 
-        view.btnUndo.setOnClickListener {
+        btnUndo.setOnClickListener {
             viewModel.undo()
         }
-        view.btnStats.setOnClickListener {
+        btnStats.setOnClickListener {
             viewModel.navigate(to = Screen.Stats)
         }
     }

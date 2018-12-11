@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.samsaz.canvasmemories.R
 import com.samsaz.canvasmemories.model.MemoryEvent
 import com.samsaz.canvasmemories.model.Screen
-import kotlinx.android.synthetic.main.fragment_mind_stats.view.*
+import kotlinx.android.synthetic.main.fragment_mind_stats.*
 
 /**
  * Copyright 2018
@@ -22,6 +22,7 @@ class MindStatsFragment: Fragment() {
     private lateinit var viewModel: MindViewModel
     private val adapter = MemoryTypeAdapter()
     private val memoryEventListener = { event: MemoryEvent ->
+        updateEmptyState()
         viewModel.onMemoryEvent(event)
     }
 
@@ -38,17 +39,24 @@ class MindStatsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_mind_stats, container, false)
-        setupView(view)
-        return view
+        return inflater.inflate(R.layout.fragment_mind_stats, container, false)
     }
 
-    private fun setupView(view: View) = with(view) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView()
+    }
+
+    private fun setupView() {
         rvList.layoutManager = LinearLayoutManager(context)
         rvList.adapter = adapter
         btnEditor.setOnClickListener {
             viewModel.navigate(to = Screen.Editor)
         }
+        updateEmptyState()
+    }
+
+    private fun updateEmptyState() {
         tvBlankMind.visibility = if (adapter.items.isEmpty()) {
             View.VISIBLE
         } else {
